@@ -7,17 +7,87 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+**Cara Menjalankan (Local)**
+
+Pastikan Anda sudah menginstal `composer` dan `php` di sistem. Ikuti langkah berikut untuk menjalankan aplikasi secara lokal:
+
+-   Salin file lingkungan dan sesuaikan konfigurasi database:
+
+    -   Pada Windows (PowerShell / CMD):
+
+        ```powershell
+        copy .env.example .env
+        ```
+
+    -   Pada macOS / Linux:
+
+        ```bash
+        cp .env.example .env
+        ```
+
+-   Instal dependensi PHP:
+
+    ```bash
+    composer install
+    ```
+
+-   Generate application key:
+
+    ```bash
+    php artisan key:generate
+    ```
+
+-- Jalankan migrasi database dan seed (bersihkan database terlebih dahulu):
+
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+-   Apakah perlu mengubah `.env` dan mengisi nama database?
+
+    Ya — sebelum menjalankan migrasi Anda harus mengatur koneksi database di file `.env` (kolom `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`). Contoh pengaturan minimal untuk MySQL lokal (Laragon/xampp):
+
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_database_anda
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+
+    Jika database belum dibuat, buat dahulu lewat phpMyAdmin atau dari terminal MySQL, contohnya:
+
+    ```bash
+    mysql -u root -e "CREATE DATABASE nama_database_anda CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    ```
+
+-   Menjalankan server pengembangan:
+
+    ```bash
+    php artisan serve --host=127.0.0.1 --port=8000
+    ```
+
+Setelah langkah di atas selesai, buka http://127.0.0.1:8000 di peramban Anda.
+
+**Akun Login Admin (contoh)**
+
+-   Username: `admin`
+-   Password: `123`
+
+Catatan: Pastikan data pengguna admin sudah ada di database (seeder) atau buat pengguna admin baru jika perlu.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   [Simple, fast routing engine](https://laravel.com/docs/routing).
+-   [Powerful dependency injection container](https://laravel.com/docs/container).
+-   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+-   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+-   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+-   [Robust background job processing](https://laravel.com/docs/queues).
+-   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -33,14 +103,14 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **[Vehikl](https://vehikl.com)**
+-   **[Tighten Co.](https://tighten.co)**
+-   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+-   **[64 Robots](https://64robots.com)**
+-   **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+-   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-   **[Redberry](https://redberry.international/laravel-development)**
+-   **[Active Logic](https://activelogic.com)**
 
 ## Contributing
 
