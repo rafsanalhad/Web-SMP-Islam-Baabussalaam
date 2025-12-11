@@ -1,0 +1,533 @@
+@extends('layouts.frontend')
+
+@section('title', 'Akademik - SMP Islam Baabussalaam')
+
+@section('styles')
+<style>
+    :root {
+        --primary: #2a9d8f;
+        --primary-light: rgba(42, 157, 143, 0.1);
+        --secondary: #264653;
+        --accent: #e9c46a;
+        --success: #4caf50;
+        --light: #f8f9fa;
+        --dark: #212529;
+    }
+    
+    /* Modern Typography */
+    body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.7;
+        color: #444;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 700;
+        color: var(--secondary);
+    }
+    
+    /* Section Styling */
+    section {
+        padding: 5rem 0;
+        position: relative;
+    }
+    
+    .section-header {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-header h2:after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        bottom: -10px;
+        left: 0;
+        border-radius: 2px;
+    }
+    
+    .section-header.text-center h2:after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Animations */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .delay-1 { transition-delay: 0.2s; }
+    .delay-2 { transition-delay: 0.4s; }
+    .delay-3 { transition-delay: 0.6s; }
+    
+    /* Breadcrumb */
+    .breadcrumb-section {
+        background: var(--light);
+        position: relative;
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--secondary);
+    }
+    
+    .breadcrumb-item.active {
+        color: var(--secondary);
+        font-weight: 500;
+    }
+    
+    /* Program Cards */
+    .program-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .program-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
+    }
+    
+    .program-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(42,157,143,0.1), rgba(233,196,106,0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .program-card:hover:before {
+        opacity: 1;
+    }
+    
+    .program-card-header {
+        padding: 1.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .program-card-header:after {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+    }
+    
+    .program-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    /* Academic Calendar */
+    .academic-schedule {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .academic-schedule thead {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+    
+    .academic-schedule th {
+        color: white;
+        font-weight: 500;
+        padding: 1rem;
+    }
+    
+    .academic-schedule td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+    
+    .academic-schedule tr:hover td {
+        background-color: var(--primary-light);
+    }
+    
+    /* Method Cards */
+    .method-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.5s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .method-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+    
+    .method-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    /* Extracurricular Cards */
+    .extracurricular-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.5s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        padding: 2rem 1rem;
+        text-align: center;
+        background: white;
+    }
+    
+    .extracurricular-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+    
+    .extracurricular-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .section-header h2:after {
+            width: 30%;
+        }
+        
+        .program-icon,
+        .method-icon,
+        .extracurricular-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+        }
+    }
+</style>
+@endsection
+
+@section('content')
+<!-- Breadcrumb Navigation -->
+<section class="breadcrumb-section py-3 fade-in">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url('/') }}"><i class="fas fa-home me-2"></i>Beranda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Akademik</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Program Akademik Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5 fade-in">
+            <h2 class="fw-bold">Program Akademik</h2>
+            <p class="lead text-muted">Kurikulum Unggulan SMP Baabussalaam</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Program 1 -->
+            <div class="col-md-6 col-lg-4 fade-in">
+                <div class="card program-card h-100">
+                    <div class="program-card-header bg-primary">
+                        <h5 class="mb-0 text-center">Kurikulum Nasional Plus</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="program-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <p>Kurikulum nasional yang diperkaya dengan pengembangan karakter Islami dan penguasaan teknologi digital.</p>
+                        <ul class="list-unstyled text-start ps-3">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Mata pelajaran wajib Diknas</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Penguatan pendidikan karakter</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Integrasi nilai-nilai Islam</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 2 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-1">
+                <div class="card program-card h-100">
+                    <div class="program-card-header bg-success">
+                        <h5 class="mb-0 text-center">Program Tahfidz</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="program-icon bg-success bg-opacity-10 text-success">
+                            <i class="fas fa-quran"></i>
+                        </div>
+                        <p>Program khusus menghafal Al-Qur'an dengan target minimal 2 juz selama masa studi di SMP Baabussalaam.</p>
+                        <ul class="list-unstyled text-start ps-3">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Hafalan Al-Qur'an</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Tahsin dan Tajwid</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Pemahaman ayat</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program 3 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-2">
+                <div class="card program-card h-100">
+                    <div class="program-card-header bg-warning">
+                        <h5 class="mb-0 text-center">STEAM Education</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="program-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <p>Pendidikan terintegrasi Science, Technology, Engineering, Arts, and Mathematics untuk pengembangan kreativitas.</p>
+                        <ul class="list-unstyled text-start ps-3">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Pembelajaran berbasis proyek</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Robotik dasar</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Coding untuk pemula</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Kalender Akademik Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5 fade-in">
+            <h2 class="fw-bold">Kalender Akademik</h2>
+            <p class="lead text-muted">Tahun Pelajaran 2023/2024</p>
+        </div>
+
+        <div class="row justify-content-center fade-in delay-1">
+            <div class="col-lg-10">
+                <div class="academic-schedule">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="30%">Kegiatan</th>
+                                    <th width="25%">Tanggal</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hari Pertama Sekolah</td>
+                                    <td>17 Juli 2023</td>
+                                    <td>Pembagian kelas dan pengenalan sekolah</td>
+                                </tr>
+                                <tr>
+                                    <td>UTS Ganjil</td>
+                                    <td>25-29 September 2023</td>
+                                    <td>Ujian Tengah Semester 1</td>
+                                </tr>
+                                <tr>
+                                    <td>UAS Ganjil</td>
+                                    <td>4-8 Desember 2023</td>
+                                    <td>Ujian Akhir Semester 1</td>
+                                </tr>
+                                <tr>
+                                    <td>Libur Semester</td>
+                                    <td>18 Des 2023 - 1 Jan 2024</td>
+                                    <td>Libur akhir semester ganjil</td>
+                                </tr>
+                                <tr>
+                                    <td>UTS Genap</td>
+                                    <td>4-8 Maret 2024</td>
+                                    <td>Ujian Tengah Semester 2</td>
+                                </tr>
+                                <tr>
+                                    <td>UAS Genap</td>
+                                    <td>3-7 Juni 2024</td>
+                                    <td>Ujian Akhir Semester 2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Metode Pembelajaran Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5 fade-in">
+            <h2 class="fw-bold">Metode Pembelajaran</h2>
+            <p class="lead text-muted">Pendekatan inovatif untuk pembelajaran efektif</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4 fade-in">
+                <div class="card method-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="method-icon bg-primary bg-opacity-10 text-primary mb-4">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Pembelajaran Kolaboratif</h4>
+                        <p class="mb-0">Siswa bekerja dalam kelompok untuk memecahkan masalah dan menyelesaikan proyek bersama.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 fade-in delay-1">
+                <div class="card method-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="method-icon bg-success bg-opacity-10 text-success mb-4">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <h4>Pembelajaran Digital</h4>
+                        <p class="mb-0">Pemanfaatan platform e-learning dan alat digital untuk pembelajaran yang interaktif.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 fade-in delay-2">
+                <div class="card method-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="method-icon bg-warning bg-opacity-10 text-warning mb-4">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h4>Pembelajaran Kontekstual</h4>
+                        <p class="mb-0">Mengaitkan materi pelajaran dengan kehidupan nyata dan lingkungan sekitar siswa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ekstrakurikuler Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5 fade-in">
+            <h2 class="fw-bold">Program Ekstrakurikuler</h2>
+            <p class="lead text-muted">Pengembangan minat dan bakat siswa</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3 col-6 fade-in">
+                <div class="extracurricular-card">
+                    <div class="extracurricular-icon bg-info bg-opacity-10 text-info">
+                        <i class="fas fa-book-quran"></i>
+                    </div>
+                    <h5>Tahfidz Qur'an</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 fade-in delay-1">
+                <div class="extracurricular-card">
+                    <div class="extracurricular-icon bg-danger bg-opacity-10 text-danger">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <h5>Olahraga</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 fade-in delay-2">
+                <div class="extracurricular-card">
+                    <div class="extracurricular-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h5>Robotik</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 fade-in delay-3">
+                <div class="extracurricular-card">
+                    <div class="extracurricular-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h5>Seni Lukis</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+
+@section('scripts')
+<script>
+    // Animation Trigger with Intersection Observer
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load Poppins font
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+        
+        // Initialize Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        // Observe all animated elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+@endsection

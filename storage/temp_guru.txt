@@ -1,0 +1,611 @@
+<?php include 'includes/header.php'; ?>
+
+<style>
+    :root {
+        --primary: #2a9d8f;
+        --primary-light: rgba(42, 157, 143, 0.1);
+        --secondary: #264653;
+        --accent: #e9c46a;
+        --light: #f8f9fa;
+        --dark: #212529;
+    }
+    
+    /* Modern Typography */
+    body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.7;
+        color: #444;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 700;
+        color: var(--secondary);
+    }
+    
+    /* Section Styling */
+    section {
+        padding: 5rem 0;
+        position: relative;
+    }
+    
+    .section-header {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-header h2:after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        bottom: -10px;
+        left: 0;
+        border-radius: 2px;
+    }
+    
+    .section-header.text-center h2:after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Animations */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .delay-1 { transition-delay: 0.2s; }
+    .delay-2 { transition-delay: 0.4s; }
+    .delay-3 { transition-delay: 0.6s; }
+    
+    /* Breadcrumb */
+    .breadcrumb-section {
+        background: var(--light);
+        position: relative;
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--secondary);
+    }
+    
+    .breadcrumb-item.active {
+        color: var(--secondary);
+        font-weight: 500;
+    }
+    
+    /* Teacher Cards */
+    .teacher-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        position: relative;
+    }
+    
+    .teacher-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12) !important;
+    }
+    
+    .teacher-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(42,157,143,0.1), rgba(233,196,106,0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .teacher-card:hover:before {
+        opacity: 1;
+    }
+    
+    .teacher-img-container {
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .teacher-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .teacher-card:hover .teacher-img-container img {
+        transform: scale(1.05);
+    }
+    
+    .teacher-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        padding: 1.5rem;
+        color: white;
+    }
+    
+    .teacher-overlay h5 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .teacher-overlay p {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    .teacher-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--accent);
+        color: var(--secondary);
+        padding: 5px 10px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Search Filter */
+    .search-container {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto 3rem;
+    }
+    
+    #searchInput {
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: 2px solid #dee2e6;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    #searchInput:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.25);
+    }
+    
+    .search-btn {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .search-btn:hover {
+        background: var(--secondary);
+        transform: scale(1.05);
+    }
+    
+    /* Category Title */
+    .category-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+        padding-bottom: 10px;
+    }
+    
+    .category-title:after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 3px;
+        background: var(--primary);
+        bottom: 0;
+        left: 0;
+        border-radius: 3px;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .section-header h2:after {
+            width: 30%;
+        }
+        
+        .teacher-img-container {
+            height: 250px;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<section class="breadcrumb-section py-3 fade-in">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home me-2"></i>Beranda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Guru & Staff</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Guru & Staff Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-4 fade-in">
+            <h2 class="fw-bold">Guru & Staff</h2>
+            <p class="lead text-muted">Tenaga Pendidik Profesional SMP Baabussalaam</p>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="search-container fade-in delay-1">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Cari guru atau staff...">
+                <button class="search-btn" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kepala Sekolah & Wakil -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h4 class="category-title fw-bold fade-in">Kepala Sekolah & Wakil</h4>
+            </div>
+            
+            <!-- Kepala Sekolah -->
+            <div class="col-md-6 col-lg-4 mx-auto fade-in">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/principal.jpg" class="img-fluid" alt="Kepala Sekolah">
+                        <div class="teacher-overlay">
+                            <h5>Dr. Ahmad Fauzi, M.Pd</h5>
+                            <p>Kepala Sekolah</p>
+                        </div>
+                        <div class="teacher-badge">Kepsek</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Pd, M.Pd, Dr. Pendidikan Islam</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 15 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> kepala@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Wakil Kepala Sekolah -->
+            <div class="col-md-6 col-lg-4 fade-in delay-1">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/vice-principal.jpg" class="img-fluid" alt="Wakil Kepala Sekolah">
+                        <div class="teacher-overlay">
+                            <h5>Drs. Muhammad Rizal</h5>
+                            <p>Wakil Kepala Sekolah</p>
+                        </div>
+                        <div class="teacher-badge">Wakasek</div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Pd, M.M - Manajemen Pendidikan</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 12 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> wakil@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guru Mata Pelajaran -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h4 class="category-title fw-bold fade-in">Guru Mata Pelajaran</h4>
+            </div>
+            
+            <!-- Guru 1 -->
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/teacher1.jpg" class="img-fluid" alt="Guru Matematika">
+                        <div class="teacher-overlay">
+                            <h5>Siti Aminah, S.Pd</h5>
+                            <p>Guru Matematika</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Pd Matematika</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengajar sejak 2015</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> siti.aminah@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Guru 2 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-1">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/teacher2.jpg" class="img-fluid" alt="Guru IPA">
+                        <div class="teacher-overlay">
+                            <h5>Budi Santoso, M.Pd</h5>
+                            <p>Guru IPA</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Pd, M.Pd - Pendidikan IPA</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 8 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> budi.santoso@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Guru 3 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-2">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/teacher3.jpg" class="img-fluid" alt="Guru Bahasa Inggris">
+                        <div class="teacher-overlay">
+                            <h5>Sarah Johnson, S.Pd</h5>
+                            <p>Guru Bahasa Inggris</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Pd Pendidikan Bahasa Inggris</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Native Speaker</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> sarah.johnson@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Guru 4 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-3">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/teacher4.jpg" class="img-fluid" alt="Guru Agama">
+                        <div class="teacher-overlay">
+                            <h5>Ustadz Abdul Rahman, Lc</h5>
+                            <p>Guru Pendidikan Agama</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> Lc. - Universitas Al-Azhar Kairo</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 10 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> abdul.rahman@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Administrasi -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <h4 class="category-title fw-bold fade-in">Staff Administrasi</h4>
+            </div>
+            
+            <!-- Staff 1 -->
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/staff1.jpg" class="img-fluid" alt="Staff Tata Usaha">
+                        <div class="teacher-overlay">
+                            <h5>Dewi Lestari, A.Md</h5>
+                            <p>Kepala Tata Usaha</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> A.Md Administrasi Pendidikan</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 7 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> dewi.lestari@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Staff 2 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-1">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/staff2.jpg" class="img-fluid" alt="Staff Perpustakaan">
+                        <div class="teacher-overlay">
+                            <h5>Rina Wijaya, S.I.Pust</h5>
+                            <p>Pustakawan</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.I.Pust - Ilmu Perpustakaan</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 5 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> rina.wijaya@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Staff 3 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-2">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/staff3.jpg" class="img-fluid" alt="Staff Laboratorium">
+                        <div class="teacher-overlay">
+                            <h5>Ahmad Syarif, S.T</h5>
+                            <p>Laboran IPA</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.T Teknik Laboratorium</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 6 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> ahmad.syarif@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Staff 4 -->
+            <div class="col-md-6 col-lg-3 fade-in delay-3">
+                <div class="card teacher-card h-100">
+                    <div class="teacher-img-container">
+                        <img src="assets/img/teachers/staff4.jpg" class="img-fluid" alt="Staff IT">
+                        <div class="teacher-overlay">
+                            <h5>Fajar Nugraha, S.Kom</h5>
+                            <p>Staff IT</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> S.Kom Ilmu Komputer</li>
+                            <li class="mb-2"><i class="fas fa-briefcase text-primary me-2"></i> Pengalaman 4 Tahun</li>
+                            <li><i class="fas fa-envelope text-primary me-2"></i> fajar.nugraha@baabussalaam.sch.id</li>
+                        </ul>
+                        <div class="d-flex justify-content-center mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-user-graduate"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fas fa-envelope"></i></a>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fas fa-phone"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animation Trigger with Intersection Observer
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load Poppins font
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+        
+        // Initialize Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        // Observe all animated elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                const teacherCards = document.querySelectorAll('.teacher-card');
+                
+                teacherCards.forEach(card => {
+                    const name = card.querySelector('.teacher-overlay h5').textContent.toLowerCase();
+                    const position = card.querySelector('.teacher-overlay p').textContent.toLowerCase();
+                    
+                    if(name.includes(searchValue) || position.includes(searchValue)) {
+                        card.parentElement.style.display = 'block';
+                    } else {
+                        card.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+<?php include 'includes/footer.php'; ?>

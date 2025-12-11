@@ -1,0 +1,308 @@
+<?php include 'includes/header.php'; ?>
+
+<style>
+    /* Animasi Sederhana */
+    .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+    }
+    
+    .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .delay-1 { transition-delay: 0.2s; }
+    .delay-2 { transition-delay: 0.4s; }
+    .delay-3 { transition-delay: 0.6s; }
+    
+    /* Styling Fasilitas */
+    .facility-card {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    
+    .facility-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    
+    .facility-img-container {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .facility-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .facility-card:hover .facility-img-container img {
+        transform: scale(1.1);
+    }
+    
+    .facility-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        padding: 15px;
+        color: white;
+    }
+    
+    /* Gallery Navigation */
+    .gallery-nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+    
+    .gallery-nav button {
+        border: none;
+        background: none;
+        padding: 8px 20px;
+        margin: 5px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-nav button.active,
+    .gallery-nav button:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<section class="breadcrumb-section bg-light py-3 fade-in">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Fasilitas</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Fasilitas Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5 fade-in">
+            <h2 class="fw-bold">Fasilitas Sekolah</h2>
+            <p class="lead">Sarana dan Prasarana Unggulan SMP Baabussalaam</p>
+        </div>
+
+        <!-- Gallery Navigation -->
+        <div class="gallery-nav fade-in delay-1">
+            <button class="active" data-filter="all">Semua</button>
+            <button data-filter="class">Ruang Kelas</button>
+            <button data-filter="lab">Laboratorium</button>
+            <button data-filter="sport">Olahraga</button>
+            <button data-filter="other">Lainnya</button>
+        </div>
+
+        <!-- Fasilitas Grid -->
+        <div class="row g-4">
+            <!-- Fasilitas 1 -->
+            <div class="col-md-6 col-lg-4 fade-in" data-category="class">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/classroom.jpg" class="img-fluid" alt="Ruang Kelas">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Ruang Kelas</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Ruang kelas nyaman ber-AC dengan kapasitas 30 siswa, dilengkapi LCD proyektor dan sound system.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Full AC</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Proyektor LCD</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Sound System</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fasilitas 2 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-1" data-category="lab">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/lab-ipa.jpg" class="img-fluid" alt="Lab IPA">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Laboratorium IPA</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Laboratorium IPA modern dengan peralatan lengkap untuk praktik Fisika, Kimia, dan Biologi.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Alat praktik lengkap</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Kapasitas 30 siswa</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Safety equipment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fasilitas 3 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-2" data-category="lab">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/lab-komputer.jpg" class="img-fluid" alt="Lab Komputer">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Laboratorium Komputer</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Lab komputer dengan 40 unit PC terbaru, jaringan internet cepat, dan software pendidikan.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> 40 Unit PC</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Internet 100Mbps</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Software lengkap</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fasilitas 4 -->
+            <div class="col-md-6 col-lg-4 fade-in" data-category="sport">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/lapangan.jpg" class="img-fluid" alt="Lapangan Olahraga">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Lapangan Olahraga</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Lapangan serbaguna untuk basket, futsal, voli, dan badminton dengan permukaan berkualitas.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Lapangan basket</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Futsal</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Badminton</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fasilitas 5 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-1" data-category="other">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/mushola.jpg" class="img-fluid" alt="Mushola">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Mushola</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Mushola luas dengan fasilitas lengkap untuk ibadah dan kegiatan keagamaan siswa.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Kapasitas 100 orang</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Tempat wudhu</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Sound system</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fasilitas 6 -->
+            <div class="col-md-6 col-lg-4 fade-in delay-2" data-category="other">
+                <div class="card facility-card">
+                    <div class="facility-img-container">
+                        <img src="assets/img/facilities/perpus.jpg" class="img-fluid" alt="Perpustakaan">
+                        <div class="facility-overlay">
+                            <h5 class="mb-0">Perpustakaan</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Perpustakaan dengan koleksi lebih dari 5.000 buku dan ruang baca yang nyaman.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-2"></i> 5.000+ koleksi buku</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Ruang baca nyaman</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Internet corner</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Virtual Tour Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 fade-in">
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Virtual Tour SMP Baabussalaam" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="col-lg-6 fade-in delay-1">
+                <h2 class="fw-bold mb-3">Virtual Tour</h2>
+                <p class="lead mb-4">Jelajahi fasilitas SMP Baabussalaam secara virtual dari mana saja.</p>
+                <p>Lihat langsung suasana kelas, laboratorium, dan fasilitas lainnya melalui tur virtual 360° kami. Klik tombol di bawah untuk memulai tur lengkap.</p>
+                <a href="#" class="btn btn-primary mt-3">
+                    <i class="fas fa-play-circle me-2"></i> Mulai Virtual Tour
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Simple Animation Trigger
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if(elementPosition < screenPosition) {
+                    element.classList.add('visible');
+                }
+            });
+        };
+        
+        // Run once on load
+        animateOnScroll();
+        
+        // Run on scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Gallery Filter
+        const filterButtons = document.querySelectorAll('.gallery-nav button');
+        const facilityCards = document.querySelectorAll('[data-category]');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filterValue = this.getAttribute('data-filter');
+                
+                // Filter facilities
+                facilityCards.forEach(card => {
+                    if(filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<?php include 'includes/footer.php'; ?>

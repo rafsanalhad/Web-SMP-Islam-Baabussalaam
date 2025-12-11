@@ -1,0 +1,359 @@
+<?php include 'includes/header.php'; ?>
+
+<style>
+    /* Animasi Khusus Galeri */
+    .gallery-item {
+        opacity: 0;
+        transform: scale(0.8) rotate(-5deg);
+        transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .gallery-item.visible {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+    
+    .gallery-item:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        z-index: 10;
+    }
+    
+    .gallery-img-container {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .gallery-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .gallery-item:hover .gallery-img-container img {
+        transform: scale(1.1);
+    }
+    
+    .gallery-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+    }
+    
+    .gallery-caption {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-caption {
+        bottom: 0;
+    }
+    
+    /* Filter Navigation */
+    .gallery-nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+        gap: 10px;
+    }
+    
+    .gallery-nav button {
+        border: none;
+        background: #f8f9fa;
+        padding: 8px 20px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .gallery-nav button.active,
+    .gallery-nav button:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Lightbox Modal */
+    .modal-gallery .modal-content {
+        background: transparent;
+        border: none;
+    }
+    
+    .modal-gallery .modal-body {
+        padding: 0;
+    }
+    
+    .modal-gallery img {
+        border-radius: 10px;
+        max-height: 80vh;
+    }
+    
+    /* Floating Animation */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating-btn {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<section class="breadcrumb-section bg-light py-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Galeri</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="fw-bold">Galeri Kegiatan</h2>
+            <p class="lead">Momen Berharga di SMP Baabussalaam</p>
+        </div>
+
+        <!-- Gallery Navigation -->
+        <div class="gallery-nav">
+            <button class="active" data-filter="all">Semua</button>
+            <button data-filter="academic">Akademik</button>
+            <button data-filter="sport">Olahraga</button>
+            <button data-filter="event">Acara</button>
+            <button data-filter="extracurricular">Ekstrakurikuler</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="row g-4 gallery-grid">
+            <!-- Item 1 -->
+            <div class="col-md-6 col-lg-4" data-category="academic">
+                <div class="gallery-item">
+                    <div class="gallery-img-container">
+                        <img src="assets/img/gallery/class.jpg" class="img-fluid" alt="Kegiatan Belajar">
+                        <div class="gallery-overlay">
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#galleryModal" data-bs-img="assets/img/gallery/class.jpg" data-bs-caption="Siswa sedang belajar di kelas">
+                                <i class="fas fa-expand me-2"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h5 class="mb-0">Kegiatan Belajar</h5>
+                        <small>12 Januari 2023</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Item 2 -->
+            <div class="col-md-6 col-lg-4" data-category="sport">
+                <div class="gallery-item">
+                    <div class="gallery-img-container">
+                        <img src="assets/img/gallery/sport.jpg" class="img-fluid" alt="Lomba Olahraga">
+                        <div class="gallery-overlay">
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#galleryModal" data-bs-img="assets/img/gallery/sport.jpg" data-bs-caption="Lomba olahraga tahunan antar kelas">
+                                <i class="fas fa-expand me-2"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h5 class="mb-0">Lomba Olahraga</h5>
+                        <small>5 Maret 2023</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Item 3 -->
+            <div class="col-md-6 col-lg-4" data-category="event">
+                <div class="gallery-item">
+                    <div class="gallery-img-container">
+                        <img src="assets/img/gallery/graduation.jpg" class="img-fluid" alt="Wisuda">
+                        <div class="gallery-overlay">
+                            <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#galleryModal" data-bs-img="assets/img/gallery/graduation.jpg" data-bs-caption="Acara wisuda angkatan ke-15 SMP Baabussalaam">
+                                <i class="fas fa-expand me-2"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h5 class="mb-0">Acara Wisuda</h5>
+                        <small>15 Juni 2023</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="text-center mt-5">
+            <button id="loadMore" class="btn btn-primary btn-lg px-5 floating-btn">
+                <i class="fas fa-spinner fa-spin me-2 d-none"></i>
+                Muat Lebih Banyak
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Modal -->
+<div class="modal fade modal-gallery" id="galleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="" id="modalImage" class="img-fluid" alt="">
+                <p class="text-white mt-3" id="modalCaption"></p>
+            </div>
+            <div class="modal-footer justify-content-center border-0">
+                <button type="button" class="btn btn-outline-light rounded-pill" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animation Trigger
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate gallery items on scroll
+        const animateGallery = () => {
+            const items = document.querySelectorAll('.gallery-item');
+            const windowHeight = window.innerHeight;
+            
+            items.forEach((item, index) => {
+                const position = item.getBoundingClientRect().top;
+                const delay = index * 0.1;
+                
+                if(position < windowHeight - 100) {
+                    setTimeout(() => {
+                        item.classList.add('visible');
+                    }, delay * 1000);
+                }
+            });
+        };
+        
+        // Run on load and scroll
+        animateGallery();
+        window.addEventListener('scroll', animateGallery);
+        
+        // Gallery Filter
+        const filterButtons = document.querySelectorAll('.gallery-nav button');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filterValue = this.getAttribute('data-filter');
+                
+                // Filter items
+                galleryItems.forEach(item => {
+                    if(filterValue === 'all' || item.parentElement.getAttribute('data-category') === filterValue) {
+                        item.parentElement.style.display = 'block';
+                    } else {
+                        item.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Lightbox Modal
+        const galleryModal = document.getElementById('galleryModal');
+        if(galleryModal) {
+            galleryModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const imageUrl = button.getAttribute('data-bs-img');
+                const caption = button.getAttribute('data-bs-caption');
+                
+                document.getElementById('modalImage').src = imageUrl;
+                document.getElementById('modalCaption').textContent = caption;
+            });
+        }
+        
+        // Load More Button
+        const loadMoreBtn = document.getElementById('loadMore');
+        if(loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                const spinner = this.querySelector('.fa-spinner');
+                spinner.classList.remove('d-none');
+                
+                // Simulate loading
+                setTimeout(() => {
+                    // In a real app, you would fetch more data here
+                    spinner.classList.add('d-none');
+                    
+                    // Example of adding more items
+                    const newItems = `
+                        <div class="col-md-6 col-lg-4" data-category="academic">
+                            <div class="gallery-item">
+                                <div class="gallery-img-container">
+                                    <img src="assets/img/gallery/class2.jpg" class="img-fluid" alt="Belajar Kelompok">
+                                    <div class="gallery-overlay">
+                                        <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#galleryModal" data-bs-img="assets/img/gallery/class2.jpg" data-bs-caption="Siswa belajar kelompok di perpustakaan">
+                                            <i class="fas fa-expand me-2"></i> Lihat
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="gallery-caption">
+                                    <h5 class="mb-0">Belajar Kelompok</h5>
+                                    <small>10 Februari 2023</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4" data-category="sport">
+                            <div class="gallery-item">
+                                <div class="gallery-img-container">
+                                    <img src="assets/img/gallery/basket.jpg" class="img-fluid" alt="Basket">
+                                    <div class="gallery-overlay">
+                                        <button class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="modal" data-bs-target="#galleryModal" data-bs-img="assets/img/gallery/basket.jpg" data-bs-caption="Tim basket SMP Baabussalaam">
+                                            <i class="fas fa-expand me-2"></i> Lihat
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="gallery-caption">
+                                    <h5 class="mb-0">Tim Basket</h5>
+                                    <small>18 Maret 2023</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.querySelector('.gallery-grid').insertAdjacentHTML('beforeend', newItems);
+                    animateGallery(); // Animate new items
+                    
+                    // Disable button if no more items
+                    // loadMoreBtn.disabled = true;
+                }, 1500);
+            });
+        }
+    });
+</script>
+
+<?php include 'includes/footer.php'; ?>
