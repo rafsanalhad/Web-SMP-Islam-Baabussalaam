@@ -187,23 +187,7 @@
             data: {
                 labels: ["Berita", "Guru & Staff", "Fasilitas", "Galeri"],
                 datasets: [{
-                    data: [{
-                        {
-                            $news_count
-                        }
-                    }, {
-                        {
-                            $teachers_count
-                        }
-                    }, {
-                        {
-                            $facilities_count
-                        }
-                    }, {
-                        {
-                            $gallery_count
-                        }
-                    }],
+                    data: [{{ $news_count }}, {{ $teachers_count }}, {{ $facilities_count }}, {{ $gallery_count }}],
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
                     hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a'],
                     borderWidth: 0

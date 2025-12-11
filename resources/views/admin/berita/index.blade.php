@@ -328,7 +328,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <script>
     $(document).ready(function() {
-        // Initialize DataTable
+        // Initialize DataTable safely: destroy existing instance first to avoid reinitialise warning
+        if ($.fn.DataTable.isDataTable('#newsTable')) {
+            try {
+                $('#newsTable').DataTable().clear().destroy();
+            } catch (e) {
+                console.warn('DataTable destroy error:', e);
+            }
+        }
+
         $('#newsTable').DataTable({
             language: {
                 url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
@@ -399,14 +407,18 @@
     });
     @endif
 
-    // DataTables
+    // DataTables: initialize only tables that are not yet initialised (prevents reinitialise warning)
     $(document).ready(function() {
-        $('.table').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-            },
-            pageLength: 10,
-            order: [[0, 'asc']]
+        $('.table').each(function() {
+            if (!$.fn.DataTable.isDataTable(this)) {
+                $(this).DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                    },
+                    pageLength: 10,
+                    order: [[0, 'asc']]
+                });
+            }
         });
     });
 </script>

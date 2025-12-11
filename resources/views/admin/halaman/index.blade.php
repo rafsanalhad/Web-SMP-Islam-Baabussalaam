@@ -254,16 +254,20 @@
 </style>
 @endsection
 
-@push('scripts')
+@section('scripts')
 <script>
 $(document).ready(function() {
-    $('.table').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-        },
-        pageLength: 10,
-        order: [[0, 'asc']]
+    $('.table').each(function() {
+        if (!$.fn.DataTable.isDataTable(this)) {
+            $(this).DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                },
+                pageLength: 10,
+                order: [[0, 'asc']]
+            });
+        }
     });
 });
 </script>
-@endpush
+@endsection
