@@ -624,10 +624,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('logout') }}" data-title="Logout">
-                        <span class="material-icons mr-3">logout</span>
-                        <span class="menu-text">Logout</span>
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 15px; display: flex; align-items: center; color: rgba(255, 255, 255, 0.8); cursor: pointer; border-radius: 6px; font-size: 0.95rem;" data-title="Logout" onmouseover="this.style.color='white'; this.style.background='var(--primary-light)'; this.style.transform='translateX(5px)'" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'; this.style.background='none'; this.style.transform='translateX(0)'">
+                            <span class="material-icons mr-3">logout</span>
+                            <span class="menu-text">Logout</span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -663,7 +666,14 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item" style="cursor: pointer; background: none; border: none; width: 100%; text-align: left;">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
