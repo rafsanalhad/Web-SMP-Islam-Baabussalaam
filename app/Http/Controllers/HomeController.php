@@ -15,8 +15,9 @@ class HomeController extends Controller
     {
         $latestNews = News::published()->with('author')->orderBy('created_at', 'desc')->take(6)->get();
         $gallery = Gallery::orderBy('created_at', 'desc')->take(8)->get();
+        $facilities = Facility::orderBy('created_at', 'desc')->take(4)->get();
 
-        return view('frontend.index', compact('latestNews', 'gallery'));
+        return view('frontend.index', compact('latestNews', 'gallery', 'facilities'));
     }
 
     public function about()

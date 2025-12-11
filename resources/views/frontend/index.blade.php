@@ -569,62 +569,42 @@
             </div>
             
             <div class="row g-4">
-                <div class="col-md-4 fade-in">
+                @forelse($latestNews->take(3) as $index => $news)
+                <div class="col-md-4 fade-in @if($index == 1) delay-1 @elseif($index == 2) delay-2 @endif">
                     <div class="card news-card h-100 border-0 shadow-sm hover-effect">
-                        <img src="{{ asset('assets/img/hero-bg.jpg') }}" class="card-img-top" alt="Berita 1" onerror="this.src='https://via.placeholder.com/400x200?text=Berita+1'">
+                        @if($news->image)
+                            <img src="{{ asset('assets/img/news/' . $news->image) }}" class="card-img-top" alt="{{ $news->title }}" onerror="this.src='{{ asset('assets/img/hero-bg.jpg') }}'">
+                        @else
+                            <img src="{{ asset('assets/img/hero-bg.jpg') }}" class="card-img-top" alt="{{ $news->title }}">
+                        @endif
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <small class="text-muted"><i class="fas fa-calendar-alt me-2"></i>15 Juni 2023</small>
-                                <span class="badge bg-primary">Prestasi</span>
+                                <small class="text-muted"><i class="fas fa-calendar-alt me-2"></i>{{ $news->created_at->format('d M Y') }}</small>
+                                <span class="badge 
+                                    @if($news->category == 'prestasi') bg-primary
+                                    @elseif($news->category == 'kegiatan') bg-success
+                                    @elseif($news->category == 'pengumuman') bg-warning text-dark
+                                    @else bg-info
+                                    @endif
+                                ">{{ ucfirst($news->category) }}</span>
                             </div>
-                            <h5 class="card-title">SMP Baabussalaam Raih Juara OSN 2023</h5>
-                            <p class="card-text text-muted">Siswa kami meraih medali emas dalam Olimpiade Sains Nasional tingkat provinsi.</p>
+                            <h5 class="card-title">{{ Str::limit($news->title, 60) }}</h5>
+                            <p class="card-text text-muted">{{ Str::limit($news->excerpt, 100) }}</p>
                         </div>
                         <div class="card-footer bg-transparent border-0">
-                            <a href="#" class="btn btn-sm btn-primary stretched-link">
+                            <a href="{{ route('news.detail', $news->id) }}" class="btn btn-sm btn-primary stretched-link">
                                 <i class="fas fa-arrow-right me-1"></i> Baca Selengkapnya
                             </a>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-4 fade-in delay-1">
-                    <div class="card news-card h-100 border-0 shadow-sm hover-effect">
-                        <img src="{{ asset('assets/img/hero-bg.jpg') }}" class="card-img-top" alt="Berita 2" onerror="this.src='https://via.placeholder.com/400x200?text=Berita+2'">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <small class="text-muted"><i class="fas fa-calendar-alt me-2"></i>5 Juni 2023</small>
-                                <span class="badge bg-success">Kegiatan</span>
-                            </div>
-                            <h5 class="card-title">Pembukaan Kegiatan Tahfidz Camp</h5>
-                            <p class="card-text text-muted">Program intensif menghafal Al-Qur'an selama liburan sekolah.</p>
-                        </div>
-                        <div class="card-footer bg-transparent border-0">
-                            <a href="#" class="btn btn-sm btn-primary stretched-link">
-                                <i class="fas fa-arrow-right me-1"></i> Baca Selengkapnya
-                            </a>
-                        </div>
+                @empty
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Belum ada berita terbaru.
                     </div>
                 </div>
-                
-                <div class="col-md-4 fade-in delay-2">
-                    <div class="card news-card h-100 border-0 shadow-sm hover-effect">
-                        <img src="{{ asset('assets/img/hero-bg.jpg') }}" class="card-img-top" alt="Berita 3" onerror="this.src='https://via.placeholder.com/400x200?text=Berita+3'">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <small class="text-muted"><i class="fas fa-calendar-alt me-2"></i>1 Juni 2023</small>
-                                <span class="badge bg-warning text-dark">Pengumuman</span>
-                            </div>
-                            <h5 class="card-title">Info PPDB Tahun Ajaran 2023/2024</h5>
-                            <p class="card-text text-muted">Pendaftaran siswa baru telah dibuka dengan kuota terbatas.</p>
-                        </div>
-                        <div class="card-footer bg-transparent border-0">
-                            <a href="#" class="btn btn-sm btn-primary stretched-link">
-                                <i class="fas fa-arrow-right me-1"></i> Baca Selengkapnya
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -640,37 +620,26 @@
             </div>
             
             <div class="row g-4">
-                <div class="col-md-3 col-sm-6 fade-in">
+                @forelse($facilities as $index => $facility)
+                <div class="col-md-3 col-sm-6 fade-in @if($index == 1) delay-1 @elseif($index == 2) delay-2 @elseif($index == 3) delay-3 @endif">
                     <div class="facility-card text-center bg-white rounded-3 shadow-sm hover-effect">
-                        <i class="fas fa-flask fa-3x mb-3"></i>
-                        <h5 class="fw-bold">Lab IPA</h5>
-                        <p class="text-muted small">Peralatan lengkap untuk praktikum sains</p>
+                        @if($facility->image)
+                            <img src="{{ asset('assets/img/facilities/' . $facility->image) }}" class="img-fluid rounded mb-3" style="height: 80px; width: 80px; object-fit: cover;" alt="{{ $facility->name }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <i class="fas fa-building fa-3x mb-3" style="display: none; color: var(--primary);"></i>
+                        @else
+                            <i class="fas fa-building fa-3x mb-3" style="color: var(--primary);"></i>
+                        @endif
+                        <h5 class="fw-bold">{{ $facility->name }}</h5>
+                        <p class="text-muted small">{{ Str::limit($facility->description, 60) }}</p>
                     </div>
                 </div>
-                
-                <div class="col-md-3 col-sm-6 fade-in delay-1">
-                    <div class="facility-card text-center bg-white rounded-3 shadow-sm hover-effect">
-                        <i class="fas fa-laptop fa-3x mb-3"></i>
-                        <h5 class="fw-bold">Lab Komputer</h5>
-                        <p class="text-muted small">Teknologi terkini untuk pembelajaran digital</p>
+                @empty
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Belum ada data fasilitas.
                     </div>
                 </div>
-                
-                <div class="col-md-3 col-sm-6 fade-in delay-2">
-                    <div class="facility-card text-center bg-white rounded-3 shadow-sm hover-effect">
-                        <i class="fas fa-book fa-3x mb-3"></i>
-                        <h5 class="fw-bold">Perpustakaan</h5>
-                        <p class="text-muted small">Koleksi buku lengkap dan ruang baca nyaman</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-3 col-sm-6 fade-in delay-3">
-                    <div class="facility-card text-center bg-white rounded-3 shadow-sm hover-effect">
-                        <i class="fas fa-mosque fa-3x mb-3"></i>
-                        <h5 class="fw-bold">Mushola</h5>
-                        <p class="text-muted small">Tempat ibadah yang nyaman dan representatif</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -752,41 +721,29 @@
             </div>
             
             <div class="row g-3">
-                <div class="col-md-3 col-6 fade-in">
-                    <a href="{{ url('/galeri') }}" class="gallery-item d-block overflow-hidden rounded-3 hover-effect">
-                        <img src="{{ asset('assets/img/galeri.jpg') }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="Gallery 1" onerror="this.src='https://via.placeholder.com/300x200?text=Galeri+1'">
-                        <div class="gallery-caption bg-dark bg-opacity-50 text-white p-3">
-                            <h6 class="mb-0">Pelajaran Outdoor</h6>
+                @forelse($gallery->take(4) as $index => $item)
+                <div class="col-md-3 col-6 fade-in @if($index == 1) delay-1 @elseif($index == 2) delay-2 @elseif($index == 3) delay-3 @endif">
+                    <a href="{{ url('/galeri') }}" class="gallery-item d-block overflow-hidden rounded-3 hover-effect position-relative">
+                        @if($item->image)
+                            <img src="{{ asset('assets/img/gallery/' . $item->image) }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="{{ $item->title }}" onerror="this.src='{{ asset('assets/img/galeri.jpg') }}'">
+                        @else
+                            <img src="{{ asset('assets/img/galeri.jpg') }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="{{ $item->title }}">
+                        @endif
+                        <div class="gallery-caption position-absolute bottom-0 w-100 bg-dark bg-opacity-50 text-white p-3">
+                            <h6 class="mb-0">{{ Str::limit($item->title, 30) }}</h6>
+                            @if($item->category)
+                                <small class="text-white-50">{{ ucfirst($item->category) }}</small>
+                            @endif
                         </div>
                     </a>
                 </div>
-                
-                <div class="col-md-3 col-6 fade-in delay-1">
-                    <a href="{{ url('/galeri') }}" class="gallery-item d-block overflow-hidden rounded-3 hover-effect">
-                        <img src="{{ asset('assets/img/galeri.jpg') }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="Gallery 2" onerror="this.src='https://via.placeholder.com/300x200?text=Galeri+2'">
-                        <div class="gallery-caption bg-dark bg-opacity-50 text-white p-3">
-                            <h6 class="mb-0">Ekstrakurikuler</h6>
-                        </div>
-                    </a>
+                @empty
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i> Belum ada galeri kegiatan.
+                    </div>
                 </div>
-                
-                <div class="col-md-3 col-6 fade-in delay-2">
-                    <a href="{{ url('/galeri') }}" class="gallery-item d-block overflow-hidden rounded-3 hover-effect">
-                        <img src="{{ asset('assets/img/galeri.jpg') }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="Gallery 3" onerror="this.src='https://via.placeholder.com/300x200?text=Galeri+3'">
-                        <div class="gallery-caption bg-dark bg-opacity-50 text-white p-3">
-                            <h6 class="mb-0">Peringatan Hari Besar</h6>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="col-md-3 col-6 fade-in delay-3">
-                    <a href="{{ url('/galeri') }}" class="gallery-item d-block overflow-hidden rounded-3 hover-effect">
-                        <img src="{{ asset('assets/img/galeri.jpg') }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="Gallery 4" onerror="this.src='https://via.placeholder.com/300x200?text=Galeri+4'">
-                        <div class="gallery-caption bg-dark bg-opacity-50 text-white p-3">
-                            <h6 class="mb-0">Kegiatan Tahfidz</h6>
-                        </div>
-                    </a>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
