@@ -116,7 +116,7 @@
 <div class="card shadow-sm">
     <div class="card-body p-2">
         <div class="table-responsive">
-            <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+            <table id="galleryTable" class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
                 <thead class="table-light text-center align-middle">
                     <tr>
                         <th width="35">#</th>
@@ -195,69 +195,95 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        @if(session('success')) Swal.fire({
-            icon: 'success',
-            title: '{{session('
-            success ')}}',
-            showConfirmButton: false,
-            timer: 1500
-        });
-        @endif
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = this.dataset.id;
-                document.getElementById('edit-id').value = id;
-                document.getElementById('editForm').action = '/admin/galeri/' + id;
-                document.getElementById('edit-title').value = this.dataset.title;
-                document.getElementById('edit-description').value = this.dataset.description;
-                document.getElementById('edit-category').value = this.dataset.category;
-                const img = this.dataset.image;
-                document.getElementById('edit-preview').innerHTML = img ? `<img src="/assets/img/gallery/${img}" class="img-fluid rounded" style="max-height:120px;">` : `<small class="text-muted">Tidak ada gambar</small>`;
-                new bootstrap.Modal(document.getElementById('editModal')).show();
-            });
-        });
-        document.querySelectorAll('.btn-preview').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('preview-img').src = this.dataset.image;
-                document.getElementById('preview-title').textContent = this.dataset.title;
-                document.getElementById('preview-category').textContent = this.dataset.category;
-                document.getElementById('preview-description').textContent = this.dataset.description;
-                new bootstrap.Modal(document.getElementById('previewModal')).show();
-            });
-        });
-        document.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('form');
-                Swal.fire({
-                    title: 'Yakin ingin menghapus?',
-                    text: 'Data akan dihapus secara permanen!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
-            });
-        });
-    });
-</script>
 @endsection
 
-@push('scripts')
+@section('scripts')
 <script>
+console.log('Galeri scripts section loaded');
+console.log('jQuery available:', typeof jQuery !== 'undefined');
+console.log('DataTables available:', typeof $.fn.DataTable !== 'undefined');
+
 $(document).ready(function() {
-    $('.table').DataTable({
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-        },
-        pageLength: 10,
-        order: [[0, 'asc']]
+    console.log('Document ready fired');
+    
+    // SweetAlert notifications
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: '{{ session("success") }}',
+        showConfirmButton: false,
+        timer: 1500
     });
+    @endif
+
+    // Edit button handler
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            document.getElementById('edit-id').value = id;
+            document.getElementById('editForm').action = '/admin/galeri/' + id;
+            document.getElementById('edit-title').value = this.dataset.title;
+            document.getElementById('edit-description').value = this.dataset.description;
+            document.getElementById('edit-category').value = this.dataset.category;
+            const img = this.dataset.image;
+            document.getElementById('edit-preview').innerHTML = img ? `<img src="/assets/img/gallery/${img}" class="img-fluid rounded" style="max-height:120px;">` : `<small class="text-muted">Tidak ada gambar</small>`;
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        });
+    });
+
+    // Preview button handler
+    document.querySelectorAll('.btn-preview').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('preview-img').src = this.dataset.image;
+            document.getElementById('preview-title').textContent = this.dataset.title;
+            document.getElementById('preview-category').textContent = this.dataset.category;
+            document.getElementById('preview-description').textContent = this.dataset.description;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        });
+    });
+
+    // Delete button handler
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: 'Data akan dihapus secara permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    });
+
+    // DataTable initialization
+    console.log('Attempting DataTable init...');
+    console.log('Table exists:', $('#galleryTable').length);
+    
+    if ($('#galleryTable').length > 0) {
+        try {
+            if (!$.fn.DataTable.isDataTable('#galleryTable')) {
+                $('#galleryTable').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                    },
+                    pageLength: 10,
+                    order: [[0, 'asc']]
+                });
+                console.log('DataTable initialized successfully!');
+            } else {
+                console.log('DataTable already initialized');
+            }
+        } catch(err) {
+            console.error('DataTable init error:', err);
+        }
+    } else {
+        console.error('Table #galleryTable not found!');
+    }
 });
 </script>
-@endpush
+@endsection
