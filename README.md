@@ -73,7 +73,7 @@ Setelah langkah di atas selesai, buka http://127.0.0.1:8000 di peramban Anda.
 **Akun Login Admin (contoh)**
 
 -   Username: `admin`
--   Password: `123`
+-   Password: `admin123`
 
 Catatan: Pastikan data pengguna admin sudah ada di database (seeder) atau buat pengguna admin baru jika perlu.
 
