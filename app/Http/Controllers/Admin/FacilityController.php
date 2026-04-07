@@ -22,14 +22,15 @@ class FacilityController extends Controller
             'category' => 'required|in:class,lab,sport,other',
             'description' => 'nullable',
             'features' => 'nullable',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|file|max:2048'
         ]);
 
         $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/img/facilities'), $imageName);
+            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $targetPath = public_path('assets/img/facilities/' . $imageName);
+            file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
 
         Facility::create([
@@ -52,7 +53,7 @@ class FacilityController extends Controller
             'category' => 'required|in:class,lab,sport,other',
             'description' => 'nullable',
             'features' => 'nullable',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|file|max:2048'
         ]);
 
         $imageName = $facility->image;
@@ -61,8 +62,9 @@ class FacilityController extends Controller
                 unlink(public_path('assets/img/facilities/' . $facility->image));
             }
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/img/facilities'), $imageName);
+            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $targetPath = public_path('assets/img/facilities/' . $imageName);
+            file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
 
         $facility->update([

@@ -31,7 +31,7 @@ class NewsController extends Controller
             'excerpt' => 'nullable',
             'category' => 'required|in:academic,event,achievement,announcement',
             'status' => 'required|in:published,draft',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|max:2048',
         ]);
 
         $validated['author_id'] = Auth::id();
@@ -39,7 +39,8 @@ class NewsController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/img/news'), $filename);
+            $targetPath = public_path('assets/img/news/' . $filename);
+            file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['image'] = $filename;
         }
 
@@ -53,7 +54,7 @@ class NewsController extends Controller
             $news->id
         );
 
-        return redirect()->route('admin.news')->with('success', 'Berita berhasil ditambahkan');
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -66,7 +67,7 @@ class NewsController extends Controller
             'excerpt' => 'nullable',
             'category' => 'required|in:academic,event,achievement,announcement',
             'status' => 'required|in:published,draft',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -77,7 +78,8 @@ class NewsController extends Controller
 
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/img/news'), $filename);
+            $targetPath = public_path('assets/img/news/' . $filename);
+            file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['image'] = $filename;
         }
 
@@ -91,7 +93,7 @@ class NewsController extends Controller
             $news->id
         );
 
-        return redirect()->route('admin.news')->with('success', 'Berita berhasil diperbarui');
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -114,7 +116,7 @@ class NewsController extends Controller
             $id
         );
 
-        return redirect()->route('admin.news')->with('success', 'Berita berhasil dihapus');
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus');
     }
 
     public function toggleStatus($id)
@@ -131,6 +133,6 @@ class NewsController extends Controller
             $news->id
         );
 
-        return redirect()->route('admin.news')->with('success', 'Status berita berhasil diubah');
+        return redirect()->route('admin.berita.index')->with('success', 'Status berita berhasil diubah');
     }
 }

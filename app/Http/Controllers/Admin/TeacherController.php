@@ -29,14 +29,15 @@ class TeacherController extends Controller
             'experience' => 'nullable',
             'email' => 'nullable|email|max:100',
             'phone' => 'nullable|max:20',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'nullable|file|max:2048',
             'category' => 'required|in:principal,teacher,staff',
         ]);
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/img/teachers'), $filename);
+            $targetPath = public_path('assets/img/teachers/' . $filename);
+            file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['photo'] = $filename;
         }
 
@@ -64,7 +65,7 @@ class TeacherController extends Controller
             'experience' => 'nullable',
             'email' => 'nullable|email|max:100',
             'phone' => 'nullable|max:20',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'nullable|file|max:2048',
             'category' => 'required|in:principal,teacher,staff',
         ]);
 
@@ -75,7 +76,8 @@ class TeacherController extends Controller
 
             $file = $request->file('photo');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('assets/img/teachers'), $filename);
+            $targetPath = public_path('assets/img/teachers/' . $filename);
+            file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['photo'] = $filename;
         }
 

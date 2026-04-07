@@ -20,14 +20,15 @@ class GalleryController extends Controller
             'title' => 'required|max:200',
             'description' => 'nullable',
             'category' => 'required|in:event,facility,achievement,activity',
-            'image' => 'required|image|max:2048'
+            'image' => 'required|file|max:2048'
         ]);
 
         $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/img/gallery'), $imageName);
+            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $targetPath = public_path('assets/img/gallery/' . $imageName);
+            file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
 
         Gallery::create([
@@ -48,7 +49,7 @@ class GalleryController extends Controller
             'title' => 'required|max:200',
             'description' => 'nullable',
             'category' => 'required|in:event,facility,achievement,activity',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|file|max:2048'
         ]);
 
         $imageName = $gallery->image;
@@ -57,8 +58,9 @@ class GalleryController extends Controller
                 unlink(public_path('assets/img/gallery/' . $gallery->image));
             }
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('assets/img/gallery'), $imageName);
+            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $targetPath = public_path('assets/img/gallery/' . $imageName);
+            file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
 
         $gallery->update([
