@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class GalleryController extends Controller
 {
@@ -20,13 +21,14 @@ class GalleryController extends Controller
             'title' => 'required|max:200',
             'description' => 'nullable',
             'category' => 'required|in:event,facility,achievement,activity',
-            'image' => 'required|file|max:2048'
+            'image' => 'required|file|mimes:jpg,jpeg,png,gif,webp|max:2048'
         ]);
 
         $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $ext = strtolower($image->getClientOriginalExtension());
+            $imageName = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/gallery/' . $imageName);
             file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
@@ -49,7 +51,7 @@ class GalleryController extends Controller
             'title' => 'required|max:200',
             'description' => 'nullable',
             'category' => 'required|in:event,facility,achievement,activity',
-            'image' => 'nullable|file|max:2048'
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048'
         ]);
 
         $imageName = $gallery->image;
@@ -58,7 +60,8 @@ class GalleryController extends Controller
                 unlink(public_path('assets/img/gallery/' . $gallery->image));
             }
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $ext = strtolower($image->getClientOriginalExtension());
+            $imageName = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/gallery/' . $imageName);
             file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
