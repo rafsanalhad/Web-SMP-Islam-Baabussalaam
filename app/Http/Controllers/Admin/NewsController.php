@@ -8,6 +8,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -31,14 +32,15 @@ class NewsController extends Controller
             'excerpt' => 'nullable',
             'category' => 'required|in:academic,event,achievement,announcement',
             'status' => 'required|in:published,draft',
-            'image' => 'nullable|file|max:2048',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
         ]);
 
         $validated['author_id'] = Auth::id();
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/news/' . $filename);
             file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['image'] = $filename;
@@ -67,7 +69,7 @@ class NewsController extends Controller
             'excerpt' => 'nullable',
             'category' => 'required|in:academic,event,achievement,announcement',
             'status' => 'required|in:published,draft',
-            'image' => 'nullable|file|max:2048',
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -77,7 +79,8 @@ class NewsController extends Controller
             }
 
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/news/' . $filename);
             file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['image'] = $filename;

@@ -7,6 +7,7 @@ use App\Models\Teacher;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class TeacherController extends Controller
 {
@@ -29,13 +30,14 @@ class TeacherController extends Controller
             'experience' => 'nullable',
             'email' => 'nullable|email|max:100',
             'phone' => 'nullable|max:20',
-            'photo' => 'nullable|file|max:2048',
+            'photo' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'category' => 'required|in:principal,teacher,staff',
         ]);
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/teachers/' . $filename);
             file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['photo'] = $filename;
@@ -65,7 +67,7 @@ class TeacherController extends Controller
             'experience' => 'nullable',
             'email' => 'nullable|email|max:100',
             'phone' => 'nullable|max:20',
-            'photo' => 'nullable|file|max:2048',
+            'photo' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'category' => 'required|in:principal,teacher,staff',
         ]);
 
@@ -75,7 +77,8 @@ class TeacherController extends Controller
             }
 
             $file = $request->file('photo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $ext = strtolower($file->getClientOriginalExtension());
+            $filename = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/teachers/' . $filename);
             file_put_contents($targetPath, file_get_contents($file->getRealPath()));
             $validated['photo'] = $filename;

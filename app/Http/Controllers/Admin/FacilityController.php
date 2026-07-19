@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Facility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FacilityController extends Controller
 {
@@ -22,13 +23,14 @@ class FacilityController extends Controller
             'category' => 'required|in:class,lab,sport,other',
             'description' => 'nullable',
             'features' => 'nullable',
-            'image' => 'nullable|file|max:2048'
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048'
         ]);
 
         $imageName = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $ext = strtolower($image->getClientOriginalExtension());
+            $imageName = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/facilities/' . $imageName);
             file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
@@ -53,7 +55,7 @@ class FacilityController extends Controller
             'category' => 'required|in:class,lab,sport,other',
             'description' => 'nullable',
             'features' => 'nullable',
-            'image' => 'nullable|file|max:2048'
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp|max:2048'
         ]);
 
         $imageName = $facility->image;
@@ -62,7 +64,8 @@ class FacilityController extends Controller
                 unlink(public_path('assets/img/facilities/' . $facility->image));
             }
             $image = $request->file('image');
-            $imageName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+            $ext = strtolower($image->getClientOriginalExtension());
+            $imageName = Str::uuid()->toString() . '.' . $ext;
             $targetPath = public_path('assets/img/facilities/' . $imageName);
             file_put_contents($targetPath, file_get_contents($image->getRealPath()));
         }
