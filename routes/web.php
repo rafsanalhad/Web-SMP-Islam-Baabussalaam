@@ -35,7 +35,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::post('/berita', [NewsController::class, 'store'])->name('admin.berita.store');
     Route::put('/berita/{id}', [NewsController::class, 'update'])->name('admin.berita.update');
     Route::delete('/berita/{id}', [NewsController::class, 'destroy'])->name('admin.berita.destroy');
-    Route::get('/berita/{id}/toggle-status', [NewsController::class, 'toggleStatus'])->name('admin.berita.toggle');
+    Route::post('/berita/{id}/toggle-status', [NewsController::class, 'toggleStatus'])->name('admin.berita.toggle');
 
     // Teachers Management
     Route::get('/guru', [TeacherController::class, 'index'])->name('admin.guru.index');
