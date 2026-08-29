@@ -5,12 +5,15 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
+# Copy package files and install dependencies
 COPY package*.json vite.config.js ./
-RUN npm ci
+RUN npm install
 
+# Copy source assets
 COPY resources/ ./resources/
 COPY public/ ./public/
 
+# Build assets
 RUN npm run build
 
 # ==========================================
@@ -36,7 +39,8 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     mariadb-client \
-    bash
+    bash \
+    sed
 
 # Configure and install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -64,13 +68,15 @@ COPY --from=frontend-builder /app/public/build /var/www/html/public/build
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Copy Custom Configurations
+RUN mkdir -p /etc/nginx/http.d /etc/supervisor/conf.d /var/log/supervisor /var/run/nginx
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom-php.ini
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Set executable permissions for entrypoint and fix storage ownership
-RUN chmod +x /usr/local/bin/entrypoint.sh \
+# Fix Windows CRLF line endings on entrypoint script and set permissions
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
 # Cloud Run default port
